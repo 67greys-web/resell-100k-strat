@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Unlock Reselling Link</title>
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .box {
+      background: #020617;
+      padding: 30px;
+      border-radius: 12px;
+      width: 350px;
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      background: #22c55e;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Get Instant Access</h2>
+    <p>Pay once & receive the reselling link by email.</p>
+    <input id="email" type="email" placeholder="Email address" required />
+    <button id="pay">Pay & Unlock</button>
+  </div>
+
+  <script>
+    const stripe = Stripe("YOUR_STRIPE_PUBLISHABLE_KEY");
+
+    document.getElementById("pay").onclick = async () => {
+      const email = document.getElementById("email").value;
+      if (!email) return alert("Enter email");
+
+      const res = await fetch("/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await res.json();
+      stripe.redirectToCheckout({ sessionId: data.id });
+    };
+  </script>
+</body>
+</html>
